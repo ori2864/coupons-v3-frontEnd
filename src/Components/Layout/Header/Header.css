@@ -1,0 +1,19 @@
+.header {
+    grid-area: header;
+    background-color: #f1f1f1;
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.centerSpan {
+  margin-left: 50px;
+    flex-grow:1;
+    text-align: center;
+}

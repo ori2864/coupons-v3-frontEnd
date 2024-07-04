@@ -1,0 +1,15 @@
+.Menu {
+    padding: 1rem;
+    background-color: #343a40;
+    color: white;
+}
+
+.Menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.Menu a:hover {
+    text-decoration: underline;
+}
+
