@@ -33,8 +33,12 @@ export function Menu(): JSX.Element {
                 
                 <>
                 <hr />
-                    <NavLink to="/customer/allCoupons">NONONONO</NavLink> <br/>
-                    <NavLink to="/customer/details">MyNONONO</NavLink> <br/>
+                    <NavLink to="/company/allCoupons">My Coupons</NavLink> <br/>
+                    <NavLink to="/company/details">My Details</NavLink> <br/>
+                    <NavLink to="/company/coupon/add">Add New Coupon</NavLink> <br/>
+                    <NavLink to="/company/coupon/update">Update Coupon</NavLink> <br/>
+                    <NavLink to="/company/coupon/delete">Delete Coupon</NavLink> <br/>
+                    
                     
                 </>
             )
@@ -43,11 +47,15 @@ export function Menu(): JSX.Element {
                 return (
                     
                     <>
-                    <hr />
+                    <br /><br />
                     hey mr. admin
+                    <hr />
 
-                        {/* <NavLink to="/customer/allCoupons">My Coupons</NavLink>
-                        <NavLink to="/customer/details">My Details</NavLink> */}
+                        <NavLink to="/admin/getAllCompanies">All Companies</NavLink><br />
+                        <NavLink to="/admin/getAllCustomers">All Customers</NavLink><br />
+                        <NavLink to="/admin/addCompany">Add Company</NavLink><br />
+                        <NavLink to="/admin/addCustomer">Add Customer</NavLink><br />
+                        {/* <NavLink to="/admin/getAllCustomers">All Customers</NavLink><br /> */}
                         
                     </>
                 )

@@ -4,7 +4,7 @@ export  class Coupon{
     id:number;
     category:Category
     title:string;
-    company_id:number;
+    companyID:number;
     description:string;
     start_date:Date;
     end_date:Date;
@@ -17,7 +17,7 @@ export  class Coupon{
         this.id=id;
         this.category=category;
         this.title=title;
-        this.company_id=company_id;
+        this.companyID=company_id;
         this.description=description;
         this.start_date=start_date;
         this.end_date=end_date;

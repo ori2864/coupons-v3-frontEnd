@@ -3,38 +3,38 @@ import { Coupon } from "../Models/Coupon";
 import { systemStore } from "./store";
 
 export class CustomerState{
-    // public customerId:number=-1;
+    public customerId:number=-1;
     // public allCoupons: Coupon[] = [];
-    public myCoupons: Coupon[] = [];
-    public couponsByCat:Coupon[] = [];
-    public couponsByPrice:Coupon[] = [];
+    public myCustomerCoupons: Coupon[] = [];
+    public customerCouponsByCat:Coupon[] = [];
+    public customerCouponsByPrice:Coupon[] = [];
 }
 export enum CustomerActionType {
-    getMyCoupons = "getMyCoupons",
-    getCouponListByPrice = "getCouponListByPrice",
-    getCouponListByCat = "getCouponListByCat",
+    getMyCustomerCoupons = "getMyCustomerCoupons",
+    getCustomerCouponListByPrice = "getCustomerCouponListByPrice",
+    getCustomerCouponListByCat = "getCustomerCouponListByCat",
     updateCustomerId = "updateCustomerId",
-    resetCoupons = "resetCoupons",
+    resetCustomerCoupons = "resetCustomerCoupons",
 }
 export interface CustomerAction {
     type: CustomerActionType,
     payload?: any
 }
 
-// export function updateCustomerIdAction(customerId:number): CustomerAction {
-//     return { type: CustomerActionType.updateCustomerId, payload: customerId };
-// }
-export function getMyCouponsAction(coupons:Coupon[]): CustomerAction {
-    return { type: CustomerActionType.getMyCoupons, payload:coupons };
+export function updateCustomerIdAction(customerId:number): CustomerAction {
+    return { type: CustomerActionType.updateCustomerId, payload: customerId };
 }
-export function getCouponsByPriceAction(price:number): CustomerAction {
-    return { type: CustomerActionType.getCouponListByPrice, payload: price };
+export function getMyCustomerCouponsAction(coupons:Coupon[]): CustomerAction {
+    return { type: CustomerActionType.getMyCustomerCoupons, payload:coupons };
 }
-export function getCouponsByCatAction(category:Category): CustomerAction {
-    return { type: CustomerActionType.getCouponListByCat, payload: category };
+export function getCustomerCouponsByPriceAction(price:number): CustomerAction {
+    return { type: CustomerActionType.getCustomerCouponListByPrice, payload: price };
 }
-export function resetListAfterPurchaseAction(): CustomerAction {
-    return { type: CustomerActionType.resetCoupons};
+export function getCustomerCouponsByCatAction(category:Category): CustomerAction {
+    return { type: CustomerActionType.getCustomerCouponListByCat, payload: category };
+}
+export function resetListAfterCustomerPurchaseAction(): CustomerAction {
+    return { type: CustomerActionType.resetCustomerCoupons};
 }
 
 export function CustomerReducer(currentState:CustomerState = new CustomerState(), action: CustomerAction): CustomerState {
@@ -43,25 +43,25 @@ export function CustomerReducer(currentState:CustomerState = new CustomerState()
         // case CustomerActionType.getCouponList:
         //     newState.allCoupons = action.payload;
         //     break;
-        case CustomerActionType.getMyCoupons:
-            newState.myCoupons = action.payload;
+        case CustomerActionType.getMyCustomerCoupons:
+            newState.myCustomerCoupons = action.payload;
             break;
             // [...newState.allCoupons].filter((item)=>item.company_id!==newState.customerId); template for company reducer
         
-        case CustomerActionType.getCouponListByCat:
+        case CustomerActionType.getCustomerCouponListByCat:
             action.payload=action.payload.toUpperCase();
-            newState.couponsByCat = [...newState.myCoupons].filter((item)=>item.category===action.payload);
+            newState.customerCouponsByCat = [...newState.myCustomerCoupons].filter((item)=>item.category===action.payload);
             break;
         
-        case CustomerActionType.getCouponListByPrice:
-            newState.couponsByPrice = [...newState.myCoupons].filter((item)=>item.price<action.payload);
+        case CustomerActionType.getCustomerCouponListByPrice:
+            newState.customerCouponsByPrice = [...newState.myCustomerCoupons].filter((item)=>item.price<action.payload);
             break;
-        case CustomerActionType.resetCoupons:
+        case CustomerActionType.resetCustomerCoupons:
             return new CustomerState();
             break;
-        // case CustomerActionType.updateCustomerId:
-        //         newState.customerId = action.payload;
-        //     break;    
+        case CustomerActionType.updateCustomerId:
+                newState.customerId = action.payload;
+            break;    
     }    
         return newState;
     

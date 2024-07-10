@@ -49,7 +49,6 @@ export function Login(): JSX.Element {
         
         axiosJWT.post("http://localhost:8080/user/login",userDetails)
         .then (res=>{
-           
             const JWT = res.headers["authorization"].split(" ")[1];
             //console.log("from server:",JWT); //email,name,userType
             
@@ -65,7 +64,7 @@ export function Login(): JSX.Element {
                 isLogged:true    
             };
 
-            systemStore.dispatch(loginAction(myAuth))
+            systemStore.dispatch(loginAction(myAuth));
              console.log(res);
             if (data.userRemember){
                 localStorage.setItem("jwt",`Bearer ${JWT}`);

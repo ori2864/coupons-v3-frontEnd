@@ -6,18 +6,34 @@ import { Coupon } from "../../../Models/Coupon";
 import axiosJWT from "../../../Utils/axiosJWT";
 import { checkData } from "../../../Utils/checkData";
 import { systemStore } from "../../../Redux/store";
-import { noneAction } from "../../../Redux/titleReducer";
+import { titleAction } from "../../../Redux/titleReducer";
 import { MySingleCoupon } from "../../MySingleCoupon/MySingleCoupon";
 import { Category } from "../../../Models/Category";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { checkAuth } from "../../../Utils/checkAuth";
+import notify from "../../../Utils/notify";
+import { useNavigate } from "react-router-dom";
 
 export function ByCatCoupons(): JSX.Element {
+const navigate = useNavigate();
 checkData();
-systemStore.dispatch(noneAction("My Coupons"))
+systemStore.dispatch(titleAction("My Coupons"))
 const [coupons,setCoupons]= useState<Coupon[]>([]);
 interface catForm{
         categoryForm:string
     };
+    useEffect(()=>{
+        if(!checkAuth("CUSTOMER")){
+            if(systemStore.getState().auth.isLogged){
+                notify.error("only customers are able to access this page!")
+                navigate("/")
+            }else{
+            notify.error("you must first authenticate to access this page!")
+            navigate("/login")
+            }
+        }
+
+    },[])
 const { register, handleSubmit, formState: { errors } } = useForm<catForm>();
 
 

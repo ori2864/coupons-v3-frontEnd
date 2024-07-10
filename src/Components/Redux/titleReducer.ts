@@ -10,7 +10,7 @@ export interface TitleAction {
     type: TitleActionType,
     payload?: any
 }
-export function noneAction(newTitle:string): TitleAction {
+export function titleAction(newTitle:string): TitleAction {
     return { type: TitleActionType.none, payload:newTitle}
 }
 
@@ -19,7 +19,7 @@ export function TitleReducer(currentState: titleState = new titleState(), action
     switch(action.type){
         case TitleActionType.none:
             newState.title = action.payload;
-            //wdwdwdwdwdwdwwddwdwdwdwdw
+          
             break;
     }
     return newState;

@@ -10,6 +10,9 @@ export class GuestState{
 export enum GuestActionType {
     getCouponList = "getCouponList",
     couponPurchase = "couponPurchase",
+    addGuestCoupon = "addGuestCoupon",
+    updateGuestCoupon = "updateGuestCoupon",
+    deleteGuestCoupon = "deleteGuestCoupon",
     // updateGuestId = "updateGuestId",
 }
 export interface GuestAction {
@@ -23,8 +26,17 @@ export interface GuestAction {
 export function getAllCouponsAction(coupons: Coupon[]): GuestAction {
     return { type: GuestActionType.getCouponList, payload: coupons };
 }
-export function couponPurchase(couponId: number): GuestAction {
+export function couponPurchaseAction(couponId: number): GuestAction {
     return { type: GuestActionType.couponPurchase, payload: couponId };
+}
+export function addGuestCouponAction(coupon: Coupon): GuestAction {
+    return { type: GuestActionType.addGuestCoupon, payload: coupon };
+}
+export function updateGuestCouponAction(coupon: Coupon): GuestAction {
+    return { type: GuestActionType.updateGuestCoupon, payload: coupon };
+}
+export function deleteGuestCouponAction(id: number): GuestAction {
+    return { type: GuestActionType.deleteGuestCoupon, payload: id };
 }
 
 
@@ -36,9 +48,6 @@ export function GuestReducer(currentState:GuestState = new GuestState(), action:
             break;
             case GuestActionType.couponPurchase:
                 console.log("inside redux purchase");
-                
-               //i want to update newState.allCoupons at index of action.payload and reduce amount by 1
-               //and save the the updated state to newState.allCoupons
                const couponIndex = newState.allCoupons.findIndex(coupon => coupon.id === action.payload);
                if (couponIndex !== -1) {
                    // Decrement the amount and update the state
@@ -49,11 +58,24 @@ export function GuestReducer(currentState:GuestState = new GuestState(), action:
                        ...newState.allCoupons.slice(couponIndex + 1)
                    ];
                }
-                console.log("coupons after puchase: ",newState.allCoupons)
+                // console.log("coupons after puchase: ",newState.allCoupons)
             break;
-        // case GuestActionType.updateGuestId:
-        //         newState.guestId = action.payload;
-        //     break;    
+            case GuestActionType.addGuestCoupon:
+            newState.allCoupons = [...newState.allCoupons, action.payload];
+            break;
+            case GuestActionType.updateGuestCoupon:
+                let couponUpdate: Coupon = action.payload;
+                newState.allCoupons = newState.allCoupons.map(coupon => 
+                    coupon.id == couponUpdate.id ? couponUpdate : coupon
+                );
+            break;
+            case GuestActionType.deleteGuestCoupon:
+                console.log(action.payload)
+                console.log(newState.allCoupons)
+                newState.allCoupons = [...newState.allCoupons].filter(item=>item.id!=action.payload) ;
+                console.log(newState.allCoupons)
+                break;
+          
     }    
         return newState;
     

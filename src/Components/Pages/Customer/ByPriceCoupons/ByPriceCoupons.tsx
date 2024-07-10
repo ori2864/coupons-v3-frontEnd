@@ -1,24 +1,40 @@
 import { ButtonGroup, Button, Select, MenuItem, TextField } from "@mui/material";
 import "./ByPriceCoupons.css";
 import { Category } from "../../../Models/Category";
-import { systemStore } from "../../../Redux/store";
+import {  systemStore } from "../../../Redux/store";
 import { useEffect, useState } from "react";
 import { checkData } from "../../../Utils/checkData";
 import axiosJWT from "../../../Utils/axiosJWT";
 import { Coupon } from "../../../Models/Coupon";
-import { noneAction } from "../../../Redux/titleReducer";
+import { titleAction } from "../../../Redux/titleReducer";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { MySingleCoupon } from "../../MySingleCoupon/MySingleCoupon";
+import { useNavigate } from "react-router-dom";
+import { checkAuth } from "../../../Utils/checkAuth";
+import notify from "../../../Utils/notify";
 
 export function ByPriceCoupons(): JSX.Element {
+    const navigate = useNavigate();
     checkData();
-    systemStore.dispatch(noneAction("Coupons By Price"))
+    systemStore.dispatch(titleAction("Coupons By Price"))
     const [coupons,setCoupons]= useState<Coupon[]>([]);
     interface priceForm{
         priceForm:number
     };
     const { register, handleSubmit, formState: { errors } } = useForm<priceForm>();
     
+    useEffect(()=>{
+        if(!checkAuth("CUSTOMER")){
+            if(systemStore.getState().auth.isLogged){
+                notify.error("only customers are able to access this page!")
+                navigate("/")
+            }else{
+            notify.error("you must first authenticate to access this page!")
+            navigate("/login")
+            }
+        }
+
+    },[])
     
     const categoryInput: SubmitHandler<priceForm> = (data) => {
         console.log(data.priceForm)

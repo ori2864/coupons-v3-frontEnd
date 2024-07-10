@@ -1,12 +1,17 @@
+import "./CustomerDetails.css";
 import { useEffect, useState } from "react";
 import axiosJWT from "../../../Utils/axiosJWT";
 import { checkData } from "../../../Utils/checkData";
-import "./CustomerDetails.css";
 import { Coupon } from "../../../Models/Coupon";
 import { SingleCoupon } from "../../SingleCoupon/SingleCoupon";
 import { MySingleCoupon } from "../../MySingleCoupon/MySingleCoupon";
+import { checkAuth } from "../../../Utils/checkAuth";
+import { systemStore } from "../../../Redux/store";
+import notify from "../../../Utils/notify";
+import { useNavigate } from "react-router-dom";
 
 export function CustomerDetails(): JSX.Element {
+    const navigate = useNavigate();
     interface customer{
         id:number
         first_name:string
@@ -20,6 +25,15 @@ export function CustomerDetails(): JSX.Element {
     checkData();
     useEffect(()=>{
         axiosJWT.get(`http://localhost:8080/api/customer/get/customerDetails`).then((res)=>{
+            if(!checkAuth("CUSTOMER")){
+                if(systemStore.getState().auth.isLogged){
+                    notify.error("only customers are able to access this page!")
+                    navigate("/")
+                }else{
+                notify.error("you must first authenticate to access this page!")
+                navigate("/login")
+                }
+            }
             setCustomer(res.data);
             if (res.data.coupons) {
                 setCustomer(res.data);

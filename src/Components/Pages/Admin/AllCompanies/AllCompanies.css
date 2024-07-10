@@ -1,0 +1,20 @@
+.AllCompanies {
+	
+}
+.MyBox{
+    display: inline-block;
+    border: 1px solid black;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px;
+  }
+  .MyBox:hover{
+    opacity: 50%;
+    display: inline-block;
+    border: 1px solid black;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px;
+  }

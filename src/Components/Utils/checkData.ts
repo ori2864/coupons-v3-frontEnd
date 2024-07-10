@@ -2,6 +2,8 @@ import { jwtDecode } from "jwt-decode";
 import { systemStore} from "../Redux/store";
 import { loginAction } from "../Redux/authReducer";
 import { error } from "console";
+import { updateCompanyIdAction } from "../Redux/companyReducer";
+import { updateCustomerIdAction } from "../Redux/customerReducer";
 
 type jwtData = {
     "workId":number,
@@ -33,7 +35,7 @@ export const checkData = () => {
     if (systemStore.getState().auth.token==undefined || systemStore.getState().auth.token.length < 10) {
             //try to load it from the session storage
             try {
-            const JWT = findToken();
+    const JWT = findToken();
             if(JWT==null)throw console.error("no token found in session/local storage");
             const decoded_jwt = jwtDecode<jwtData>(JWT.split(" ")[1]);
             console.log(decoded_jwt);
@@ -46,11 +48,27 @@ export const checkData = () => {
                 isLogged: true
             };
            
-
-            systemStore.dispatch(loginAction(myAuth))
+            systemStore.dispatch(loginAction(myAuth));
+            myAuth.userType == "COMPANY"&& systemStore.dispatch(updateCompanyIdAction(myAuth.workId));
+            myAuth.userType == "CUSTOMER"&&systemStore.dispatch(updateCustomerIdAction(myAuth.workId));
         } catch {
             return;
         }
 
     }
+    else{
+    const JWT = systemStore.getState().auth.token;
+    const decoded_jwt = jwtDecode<jwtData>(JWT.split(" ")[1]);
+    let myAuth = {
+        name: decoded_jwt.userName,
+        workId: decoded_jwt.workId,
+        email: decoded_jwt.sub,
+        token: JWT,
+        userType: decoded_jwt.userType,
+        isLogged: true
+    };
+    myAuth.userType == "COMPANY"&& systemStore.dispatch(updateCompanyIdAction(myAuth.workId));
+    myAuth.userType == "CUSTOMER"&&systemStore.dispatch(updateCustomerIdAction(myAuth.workId));
+    }
+    
 }

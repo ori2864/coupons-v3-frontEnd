@@ -8,23 +8,24 @@ import notify from "../../../Utils/notify";
 import { error } from "console";
 import { checkAuth } from "../../../Utils/checkAuth";
 import { systemStore } from "../../../Redux/store";
-import { couponPurchase, getAllCouponsAction } from "../../../Redux/guestReducer";
-import { resetListAfterPurchaseAction } from "../../../Redux/customerReducer";
+import { couponPurchaseAction, getAllCouponsAction } from "../../../Redux/guestReducer";
+import { resetListAfterCustomerPurchaseAction } from "../../../Redux/customerReducer";
 import { MySingleCoupon } from "../../MySingleCoupon/MySingleCoupon";
 import { Coupon } from "../../../Models/Coupon";
 
-export function ConfirmBuy(/*props:{couponId:number}*/): JSX.Element {
+export function ConfirmBuy(): JSX.Element {
     const navigate = useNavigate(); 
     const [couponId,setId] = useState(-1);
     const [coupon,setCoupon] = useState<Coupon>();
+    let {id} = useParams();
     useEffect(()=>{
         if(!checkAuth("CUSTOMER")){
             if(systemStore.getState().auth.isLogged){
-                notify.error("only customers are able to purchase a coupon")
-                navigate("/")
+                notify.error("only customers are able to purchase a coupon");
+                navigate("/");
             }else{
-            notify.error("you must first authenticate to purchase a coupon")
-            navigate("/login")
+            notify.error("you must first authenticate to purchase a coupon");
+            navigate("/login");
             }
         }
         id!=undefined&&setId(parseInt(id));
@@ -32,15 +33,14 @@ export function ConfirmBuy(/*props:{couponId:number}*/): JSX.Element {
             setCoupon(systemStore.getState().guest.allCoupons.at(couponId))
         }
     })
-    let {id} = useParams();
     const [isBuy,setBuy] = useState(false);
    const BuyCoupon=()=>{
         axiosJWT.post(`http://localhost:8080/api/customer/purchase/${id}`).then(()=>{
                 if(id!=undefined){        
                     // const couponId:number = parseInt(id);
                     
-                    systemStore.dispatch(couponPurchase(couponId))
-                    systemStore.dispatch(resetListAfterPurchaseAction())
+                    systemStore.dispatch(couponPurchaseAction(couponId))
+                    systemStore.dispatch(resetListAfterCustomerPurchaseAction())
                     //dispatch customer add coupon to my coupons
                     notify.success("coupon successfully purchased!")
                     navigate("/");

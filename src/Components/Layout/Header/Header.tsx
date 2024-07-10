@@ -17,8 +17,12 @@ export function Header(): JSX.Element {
     const [userTypeStr,setType] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
-    useEffect(checkData);
-    console.log("user logged: "+isLogged)
+    useEffect(()=>{
+        checkData();
+    
+        console.log("user logged: "+isLogged)
+    }
+    );
 
     systemStore.subscribe(() => {
         setName(systemStore.getState().auth.name);

@@ -6,13 +6,15 @@ import { Coupon } from "../../../Models/Coupon";
 import axiosJWT from "../../../Utils/axiosJWT";
 import { checkData } from "../../../Utils/checkData";
 import { systemStore } from "../../../Redux/store";
-import { noneAction } from "../../../Redux/titleReducer";
+import { titleAction } from "../../../Redux/titleReducer";
 import { MySingleCoupon } from "../../MySingleCoupon/MySingleCoupon";
 import { RadarOutlined } from "@mui/icons-material";
 import { Category } from "../../../Models/Category";
-import { CustomerActionType, getCouponsByCatAction, getCouponsByPriceAction, getMyCouponsAction } from "../../../Redux/customerReducer";
+import { CustomerActionType, getCustomerCouponsByCatAction, getCustomerCouponsByPriceAction, getMyCustomerCouponsAction } from "../../../Redux/customerReducer";
 import { Form, SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { checkAuth } from "../../../Utils/checkAuth";
+import notify from "../../../Utils/notify";
 
     export function AllCustomerCoupons(): JSX.Element {
         const [coupons,setCoupons]= useState<Coupon[]>([]);
@@ -22,17 +24,26 @@ import { useNavigate } from "react-router-dom";
             categoryForm?:Category
             priceForm?:number
         }
-        systemStore.dispatch(noneAction("My Coupons"))
+        systemStore.dispatch(titleAction("My Coupons"))
     checkData();
     useEffect(()=>{
+        if(!checkAuth("CUSTOMER")){
+            if(systemStore.getState().auth.isLogged){
+                notify.error("only customers are able to access this page!")
+                navigate("/")
+            }else{
+            notify.error("you must first authenticate to access this page!")
+            navigate("/login")
+            }
+        }
         console.log(systemStore.getState().auth.token)
-        if(systemStore.getState().customer.myCoupons.length===0){
+        if(systemStore.getState().customer.myCustomerCoupons.length===0){
         axiosJWT.get(`http://localhost:8080/api/customer/get/coupons/all`).then(res=>{
             
             // console.log(res.data)
             
             setCoupons(res.data);
-            systemStore.dispatch(getMyCouponsAction(res.data))
+            systemStore.dispatch(getMyCustomerCouponsAction(res.data))
             console.log("api request")
         })
         .catch(err => {
@@ -40,8 +51,8 @@ import { useNavigate } from "react-router-dom";
             navigate("/")
           });
         }else{
-            console.log("redux: ",systemStore.getState().customer.myCoupons)
-            setCoupons(systemStore.getState().customer.myCoupons)
+            console.log("redux: ",systemStore.getState().customer.myCustomerCoupons)
+            setCoupons(systemStore.getState().customer.myCustomerCoupons)
         }
     },[])
 
@@ -52,13 +63,13 @@ import { useNavigate } from "react-router-dom";
     const onSubmit: SubmitHandler<formData> = (data) => {
         console.log(data)
         if (filterType === "price" && data.priceForm !== undefined) {
-            systemStore.dispatch(getCouponsByPriceAction(data.priceForm));
-            setCoupons(systemStore.getState().customer.couponsByPrice);
+            systemStore.dispatch(getCustomerCouponsByPriceAction(data.priceForm));
+            setCoupons(systemStore.getState().customer.customerCouponsByPrice);
         } else if (filterType === "category" && data.categoryForm !== undefined) {
             console.log("inside category condition")
-            systemStore.dispatch(getCouponsByCatAction(data.categoryForm));
-            console.log(systemStore.getState().customer.couponsByCat);
-            setCoupons(systemStore.getState().customer.couponsByCat);
+            systemStore.dispatch(getCustomerCouponsByCatAction(data.categoryForm));
+            console.log(systemStore.getState().customer.customerCouponsByCat);
+            setCoupons(systemStore.getState().customer.customerCouponsByCat);
             console.log(coupons)
         }
     };
